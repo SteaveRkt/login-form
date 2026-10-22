@@ -6,9 +6,32 @@ import { UsersController } from './users/users.controller.js';
 import { UsersService } from './users/users.service.js';
 import { UsersModule } from './users/users.module.js';
 import { AuthModule } from './auth/auth.module.js';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
-  imports: [DatabaseModule, UsersModule, AuthModule],
+  imports: [
+    ThrottlerModule.forRoot([
+     {
+      name:'short',
+      ttl: 60,
+      limit: 5
+     },
+     {
+      name:'medium',
+      ttl: 1000,
+      limit: 20
+
+     },
+     {
+      name:'long',
+      ttl: 1000,
+      limit: 50
+     } 
+  ]),
+    DatabaseModule,
+     UsersModule,
+     AuthModule
+  ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService],
 })
